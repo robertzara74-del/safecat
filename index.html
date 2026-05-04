@@ -1,0 +1,984 @@
+python3 << 'PYEOF'
+import json
+
+with open('/tmp/images.json') as f:
+    imgs = json.load(f)
+
+# Map: IMG_7606=balcon modern, IMG_7607=balcon noapte, IMG_7608=balcon dark modern,
+# IMG_7609=voliera mare, IMG_7610=balcon simplu, IMG_7611=catio garden, 
+# IMG_7612=catio metal mare, IMG_7613=catio premium, IMG_7614=catio woodplay,
+# IMG_7615=catio cu pisici
+
+html = f"""<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PawParadise by Robert | Spații sigure pentru pisici</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {{
+    --forest: #2d5a27;
+    --sage: #7a9e6e;
+    --mint: #b8d4aa;
+    --cream: #faf6ef;
+    --warm: #e8dcc8;
+    --wood: #8b6340;
+    --dark: #1a1a18;
+    --gold: #c9a84c;
+    --text: #2c2c2a;
+  }}
+
+  * {{ margin:0; padding:0; box-sizing:border-box; }}
+  html {{ scroll-behavior:smooth; }}
+
+  body {{
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }}
+
+  /* LOGO */
+  .logo-svg {{
+    width: 52px; height: 52px;
+  }}
+
+  /* NAV */
+  nav {{
+    position: fixed; top:0; left:0; right:0; z-index:100;
+    display: flex; align-items:center; justify-content:space-between;
+    padding: 14px 40px;
+    background: rgba(250,246,239,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(138,99,64,0.12);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+  }}
+  .nav-brand {{
+    display:flex; align-items:center; gap:12px;
+    text-decoration:none;
+  }}
+  .nav-brand-text {{
+    font-family:'Playfair Display', serif;
+    font-size:1.4rem; font-weight:900;
+    color: var(--forest);
+    line-height:1;
+  }}
+  .nav-brand-text span {{
+    color: var(--gold);
+  }}
+  .nav-brand-sub {{
+    font-size:0.6rem; letter-spacing:0.15em; text-transform:uppercase;
+    color: var(--wood); display:block; font-weight:500;
+  }}
+  .nav-links {{
+    display:flex; gap:32px; list-style:none;
+  }}
+  .nav-links a {{
+    text-decoration:none; color:var(--text);
+    font-size:0.88rem; font-weight:500; letter-spacing:0.02em;
+    transition: color 0.2s;
+  }}
+  .nav-links a:hover {{ color:var(--forest); }}
+  .nav-cta {{
+    background: var(--forest); color:#fff!important;
+    padding:10px 22px; border-radius:30px!important;
+    font-weight:600!important;
+    transition: background 0.2s, transform 0.2s !important;
+  }}
+  .nav-cta:hover {{ background: var(--sage)!important; transform:scale(1.04)!important; color:#fff!important; }}
+
+  /* HERO */
+  .hero {{
+    min-height: 100vh;
+    display:grid; grid-template-columns:1fr 1fr;
+    padding-top: 80px;
+    position:relative; overflow:hidden;
+  }}
+  .hero-left {{
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 80px 60px 80px 80px;
+    position:relative; z-index:2;
+  }}
+  .hero-badge {{
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(45,90,39,0.1);
+    color: var(--forest);
+    padding:6px 16px; border-radius:20px;
+    font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+    margin-bottom:24px; width:fit-content;
+    border: 1px solid rgba(45,90,39,0.2);
+  }}
+  .hero h1 {{
+    font-family:'Playfair Display', serif;
+    font-size:clamp(2.8rem,4.5vw,4.2rem);
+    font-weight:900; line-height:1.1;
+    color: var(--dark);
+    margin-bottom:22px;
+  }}
+  .hero h1 em {{
+    font-style:italic; color:var(--forest);
+  }}
+  .hero-sub {{
+    font-size:1.08rem; line-height:1.75;
+    color:#5a5a55; max-width:480px;
+    margin-bottom:36px;
+  }}
+  .hero-buttons {{
+    display:flex; gap:16px; flex-wrap:wrap;
+  }}
+  .btn-primary {{
+    background: var(--forest); color:#fff;
+    padding:15px 32px; border-radius:50px;
+    font-size:1rem; font-weight:600; letter-spacing:0.02em;
+    text-decoration:none;
+    transition: all 0.25s;
+    box-shadow: 0 6px 24px rgba(45,90,39,0.3);
+    display:inline-flex; align-items:center; gap:8px;
+  }}
+  .btn-primary:hover {{
+    background: var(--sage); transform:translateY(-2px);
+    box-shadow: 0 10px 32px rgba(45,90,39,0.35);
+  }}
+  .btn-secondary {{
+    border: 2px solid var(--wood); color:var(--wood);
+    padding:13px 28px; border-radius:50px;
+    font-size:1rem; font-weight:600;
+    text-decoration:none;
+    transition: all 0.25s;
+    display:inline-flex; align-items:center; gap:8px;
+  }}
+  .btn-secondary:hover {{
+    background:var(--wood); color:#fff; transform:translateY(-2px);
+  }}
+  .hero-stats {{
+    display:flex; gap:32px; margin-top:48px;
+  }}
+  .stat-item {{ text-align:left; }}
+  .stat-num {{
+    font-family:'Playfair Display',serif;
+    font-size:2rem; font-weight:900; color:var(--forest);
+    line-height:1;
+  }}
+  .stat-label {{
+    font-size:0.78rem; color:#888; font-weight:500; margin-top:2px;
+    letter-spacing:0.04em;
+  }}
+  .hero-right {{
+    position:relative; overflow:hidden;
+    display:grid; grid-template-rows:1fr 1fr;
+    gap:4px;
+  }}
+  .hero-img-main {{
+    width:100%; height:100%;
+    object-fit:cover;
+    display:block;
+  }}
+  .hero-img-grid {{
+    display:grid; grid-template-columns:1fr 1fr; gap:4px;
+  }}
+  .hero-img-grid img {{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }}
+  .hero-logo-watermark {{
+    position:absolute; bottom:20px; right:20px;
+    width:60px; height:60px; opacity:0.85;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.35));
+    z-index:5;
+  }}
+
+  /* SECTION SHARED */
+  section {{ padding: 90px 80px; }}
+  .section-label {{
+    font-size:0.75rem; font-weight:700; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--sage);
+    margin-bottom:14px;
+  }}
+  .section-title {{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2rem,3vw,2.8rem); font-weight:900;
+    line-height:1.2; color:var(--dark);
+    margin-bottom:20px;
+  }}
+  .section-title em {{ color:var(--forest); font-style:italic; }}
+
+  /* PROBLEM SECTION */
+  .problem-section {{
+    background: var(--dark);
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:80px; align-items:center;
+    padding: 100px 80px;
+  }}
+  .problem-section .section-label {{ color: var(--mint); }}
+  .problem-section .section-title {{ color:#fff; }}
+  .problem-text {{ color:rgba(255,255,255,0.72); font-size:1.04rem; line-height:1.8; margin-bottom:32px; }}
+  .problem-cards {{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;
+  }}
+  .pcard {{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px; padding:22px;
+  }}
+  .pcard-icon {{ font-size:1.8rem; margin-bottom:10px; }}
+  .pcard-title {{ font-weight:700; color:#fff; margin-bottom:6px; font-size:0.95rem; }}
+  .pcard-desc {{ font-size:0.82rem; color:rgba(255,255,255,0.55); line-height:1.5; }}
+  .problem-image-wrap {{
+    position:relative; border-radius:24px; overflow:hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }}
+  .problem-image-wrap img {{ width:100%; display:block; }}
+  .problem-logo-watermark {{
+    position:absolute; bottom:16px; right:16px;
+    width:52px; height:52px; opacity:0.9;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+  }}
+
+  /* SOLUTION */
+  .solution-section {{
+    background: var(--cream);
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:80px; align-items:center;
+  }}
+  .benefits-list {{
+    list-style:none; margin-top:28px;
+    display:flex; flex-direction:column; gap:14px;
+  }}
+  .benefits-list li {{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:14px 18px; border-radius:12px;
+    background:rgba(45,90,39,0.06);
+    border-left:3px solid var(--sage);
+    font-size:0.95rem; line-height:1.5;
+  }}
+  .benefits-list li .icon {{ font-size:1.2rem; flex-shrink:0; margin-top:1px; }}
+  .sol-images {{
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+  }}
+  .sol-images img {{
+    width:100%; border-radius:16px; object-fit:cover;
+    height:220px; display:block;
+    transition: transform 0.3s;
+    position:relative;
+  }}
+  .sol-img-wrap {{
+    position:relative; overflow:hidden; border-radius:16px;
+  }}
+  .sol-img-wrap img {{ transition:transform 0.3s; }}
+  .sol-img-wrap:hover img {{ transform:scale(1.05); }}
+  .sol-img-logo {{
+    position:absolute; bottom:10px; right:10px;
+    width:40px; height:40px; opacity:0.9;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.4));
+    z-index:3;
+  }}
+  .sol-images .big {{
+    grid-column: span 2; height:280px;
+  }}
+
+  /* BENEFITS FOR CAT */
+  .cat-benefits {{
+    background: linear-gradient(135deg, var(--forest) 0%, #1e3d1a 100%);
+    color:#fff; text-align:center;
+  }}
+  .cat-benefits .section-title {{ color:#fff; margin:0 auto 50px; max-width:600px; }}
+  .cat-benefits .section-label {{ color:var(--mint); }}
+  .benefits-grid {{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:24px;
+    margin-top:16px;
+  }}
+  .benefit-card {{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:20px; padding:28px 20px;
+    transition: transform 0.2s, background 0.2s;
+  }}
+  .benefit-card:hover {{
+    transform:translateY(-6px);
+    background:rgba(255,255,255,0.14);
+  }}
+  .benefit-emoji {{ font-size:2.4rem; margin-bottom:14px; display:block; }}
+  .benefit-title {{ font-weight:700; font-size:0.95rem; color:#fff; margin-bottom:8px; }}
+  .benefit-desc {{ font-size:0.8rem; color:rgba(255,255,255,0.65); line-height:1.5; }}
+
+  /* PROJECTS */
+  .projects-section {{ background:var(--warm); }}
+  .projects-grid {{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:48px;
+  }}
+  .project-card {{
+    border-radius:20px; overflow:hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    background:#fff;
+    transition: transform 0.3s, box-shadow 0.3s;
+    position:relative;
+  }}
+  .project-card:hover {{
+    transform:translateY(-8px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+  }}
+  .project-card img {{
+    width:100%; height:220px; object-fit:cover; display:block;
+  }}
+  .project-info {{ padding:22px; }}
+  .project-tag {{
+    font-size:0.72rem; font-weight:700; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--sage); margin-bottom:6px;
+  }}
+  .project-name {{
+    font-family:'Playfair Display',serif; font-size:1.2rem;
+    font-weight:700; color:var(--dark); margin-bottom:8px;
+  }}
+  .project-desc {{ font-size:0.85rem; color:#777; line-height:1.6; }}
+  .project-logo {{
+    position:absolute; top:12px; right:12px;
+    width:38px; height:38px; opacity:0.9;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }}
+
+  /* GALLERY */
+  .gallery-section {{ background:var(--cream); }}
+  .gallery-grid {{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 280px 280px;
+    gap:12px; margin-top:40px;
+  }}
+  .gallery-item {{
+    overflow:hidden; border-radius:16px;
+    position:relative; cursor:pointer;
+  }}
+  .gallery-item img {{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transition: transform 0.4s;
+  }}
+  .gallery-item:hover img {{ transform:scale(1.06); }}
+  .gallery-item.tall {{ grid-row:span 2; }}
+  .gallery-logo {{
+    position:absolute; bottom:10px; right:10px;
+    width:36px; height:36px; opacity:0.9;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.4));
+    z-index:3;
+  }}
+  .gallery-overlay {{
+    position:absolute; inset:0;
+    background:linear-gradient(to top, rgba(0,0,0,0.35) 0%, transparent 50%);
+  }}
+
+  /* PROCESS */
+  .process-section {{
+    background:#fff;
+    text-align:center;
+  }}
+  .steps {{
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:40px; margin-top:56px; position:relative;
+  }}
+  .steps::before {{
+    content:'';
+    position:absolute; top:40px; left:12.5%; right:12.5%;
+    height:2px; background:linear-gradient(to right, var(--mint), var(--sage));
+    z-index:0;
+  }}
+  .step {{
+    position:relative; z-index:1;
+  }}
+  .step-num {{
+    width:80px; height:80px; margin:0 auto 20px;
+    border-radius:50%; background:linear-gradient(135deg, var(--forest), var(--sage));
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:900;
+    color:#fff; box-shadow:0 8px 24px rgba(45,90,39,0.3);
+  }}
+  .step-title {{ font-weight:700; font-size:1rem; color:var(--dark); margin-bottom:8px; }}
+  .step-desc {{ font-size:0.85rem; color:#888; line-height:1.6; }}
+
+  /* TESTIMONIALS */
+  .testimonials-section {{
+    background:var(--warm);
+    text-align:center;
+  }}
+  .testimonials-grid {{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:48px;
+  }}
+  .testimonial {{
+    background:#fff; border-radius:20px; padding:32px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.07);
+    position:relative;
+    text-align:left;
+  }}
+  .testimonial::before {{
+    content:'"'; font-family:'Playfair Display',serif;
+    font-size:5rem; color:var(--mint); line-height:0.8;
+    position:absolute; top:24px; left:24px; opacity:0.5;
+  }}
+  .testimonial-text {{
+    font-size:0.95rem; line-height:1.75; color:#555;
+    margin-bottom:20px; padding-top:28px;
+  }}
+  .testimonial-author {{ font-weight:700; color:var(--dark); font-size:0.9rem; }}
+  .testimonial-pet {{ font-size:0.8rem; color:var(--sage); }}
+  .stars {{ color:var(--gold); font-size:1rem; margin-bottom:10px; letter-spacing:2px; }}
+
+  /* CTA */
+  .cta-section {{
+    background: linear-gradient(135deg, #1e3d1a, var(--forest), #3a6e34);
+    text-align:center; color:#fff; padding:120px 80px;
+    position:relative; overflow:hidden;
+  }}
+  .cta-section::before {{
+    content:''; position:absolute; inset:0;
+    background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }}
+  .cta-section .section-label {{ color:var(--mint); }}
+  .cta-title {{
+    font-family:'Playfair Display',serif;
+    font-size:clamp(2.4rem,4vw,3.5rem); font-weight:900; line-height:1.15;
+    margin-bottom:22px; position:relative;
+  }}
+  .cta-title em {{ font-style:italic; color:var(--mint); }}
+  .cta-sub {{
+    font-size:1.1rem; color:rgba(255,255,255,0.75);
+    max-width:520px; margin:0 auto 40px; line-height:1.7;
+  }}
+  .cta-contact {{
+    display:flex; align-items:center; justify-content:center; gap:12px;
+    margin-top:40px; font-size:1.1rem; color:rgba(255,255,255,0.85);
+  }}
+  .cta-contact a {{
+    color:#fff; font-weight:700; text-decoration:none; font-size:1.3rem;
+    letter-spacing:0.05em;
+  }}
+
+  /* FOOTER */
+  footer {{
+    background:var(--dark); color:rgba(255,255,255,0.6);
+    padding:48px 80px;
+    display:flex; align-items:center; justify-content:space-between;
+  }}
+  .footer-brand {{
+    display:flex; align-items:center; gap:14px;
+  }}
+  .footer-brand-text {{
+    font-family:'Playfair Display',serif; font-size:1.2rem;
+    font-weight:900; color:#fff;
+  }}
+  .footer-brand-text span {{ color:var(--gold); }}
+  .footer-right {{ font-size:0.82rem; text-align:right; }}
+  .footer-right a {{ color:var(--mint); text-decoration:none; }}
+
+  /* LOGO INLINE SVG */
+  .logo-inline {{
+    display:inline-block;
+  }}
+
+  @media(max-width:1024px){{
+    .hero {{ grid-template-columns:1fr; }}
+    .hero-right {{ height:50vh; }}
+    .problem-section, .solution-section {{ grid-template-columns:1fr; gap:48px; }}
+    .benefits-grid {{ grid-template-columns:repeat(3,1fr); }}
+    .projects-grid {{ grid-template-columns:1fr 1fr; }}
+    section {{ padding:60px 24px; }}
+    nav {{ padding:14px 24px; }}
+    .nav-links {{ display:none; }}
+    .steps {{ grid-template-columns:1fr 1fr; }}
+    .gallery-grid {{ grid-template-columns:1fr 1fr; grid-template-rows:auto; }}
+    .gallery-item.tall {{ grid-row:span 1; }}
+    .testimonials-grid {{ grid-template-columns:1fr; }}
+    footer {{ flex-direction:column; gap:20px; text-align:center; }}
+    .footer-right {{ text-align:center; }}
+  }}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <svg class="logo-svg" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#2d5a27"/>
+      <!-- cat ears -->
+      <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+      <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+      <!-- cat face -->
+      <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+      <!-- eyes -->
+      <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <circle cx="35.2" cy="38.5" r="1.2" fill="#fff"/>
+      <circle cx="47.2" cy="38.5" r="1.2" fill="#fff"/>
+      <!-- nose -->
+      <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+      <!-- whiskers -->
+      <line x1="22" y1="46" x2="36" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="22" y1="49" x2="36" y2="48" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="44" y1="46" x2="58" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="44" y1="48" x2="58" y2="49" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <!-- paw at bottom -->
+      <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+      <ellipse cx="34" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <ellipse cx="46" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <!-- R initial on paw -->
+      <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+    </svg>
+    <div>
+      <div class="nav-brand-text">Paw<span>Paradise</span></div>
+      <div class="nav-brand-sub">by Robert</div>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">Despre</a></li>
+    <li><a href="#projects">Proiecte</a></li>
+    <li><a href="#gallery">Galerie</a></li>
+    <li><a href="#process">Cum lucrăm</a></li>
+    <li><a href="#contact" class="nav-cta">📞 Contactează-ne</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-left">
+    <div class="hero-badge">🐾 Spații premium pentru pisici</div>
+    <h1>Libertate în <em>siguranță</em> pentru pisica ta</h1>
+    <p class="hero-sub">Transformăm balcoane, terase și curți în paradisuri sigure, unde pisica ta poate respira aer curat, urca, explora și se bucura de natură — fără niciun risc.</p>
+    <div class="hero-buttons">
+      <a href="#contact" class="btn-primary">🐱 Cere ofertă gratuită</a>
+      <a href="#gallery" class="btn-secondary">✨ Vezi galeria</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Proiecte finalizate</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Clienți mulțumiți</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">5★</div>
+        <div class="stat-label">Rating mediu</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img class="hero-img-main" src="data:image/jpeg;base64,{imgs['IMG_7615']}" alt="Catio cu pisici fericite"/>
+    <div class="hero-img-grid">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7612']}" alt="Catio modern"/>
+      <img src="data:image/jpeg;base64,{imgs['IMG_7613']}" alt="Catio premium"/>
+    </div>
+    <svg class="hero-logo-watermark" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.9"/>
+      <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+      <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+      <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+      <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <circle cx="35.2" cy="38.5" r="1.2" fill="#fff"/>
+      <circle cx="47.2" cy="38.5" r="1.2" fill="#fff"/>
+      <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+      <line x1="22" y1="46" x2="36" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="44" y1="46" x2="58" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+      <ellipse cx="34" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <ellipse cx="46" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+    </svg>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="problem-section" id="about">
+  <div>
+    <div class="section-label">😿 De ce contează</div>
+    <h2 class="section-title">Pisicile nu sunt făcute să stea <em>doar în casă</em></h2>
+    <p class="problem-text">Pisicile au instincte puternice — să urce, să exploreze, să simtă aerul și să urmărească mișcarea din jur. Când sunt ținute exclusiv în interior, pot deveni stresate, plictisitoare și nefericite.</p>
+    <div class="problem-cards">
+      <div class="pcard"><div class="pcard-icon">😾</div><div class="pcard-title">Stres cronic</div><div class="pcard-desc">Monotonia casei creează anxietate și comportamente distructive</div></div>
+      <div class="pcard"><div class="pcard-icon">😴</div><div class="pcard-title">Plictiseală</div><div class="pcard-desc">Lipsa stimulării mentale duce la letargie și depresie felină</div></div>
+      <div class="pcard"><div class="pcard-icon">⚖️</div><div class="pcard-title">Supraponderalitate</div><div class="pcard-desc">Fără mișcare suficientă, pisicile acumulează rapid kilograme</div></div>
+      <div class="pcard"><div class="pcard-icon">💔</div><div class="pcard-title">Calitate scăzută a vieții</div><div class="pcard-desc">Pisicile în captivitate trăiesc cu mult sub potențialul lor</div></div>
+    </div>
+  </div>
+  <div class="problem-image-wrap">
+    <img src="data:image/jpeg;base64,{imgs['IMG_7611']}" alt="Catio grădină"/>
+    <svg class="problem-logo-watermark" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+      <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+      <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+      <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+      <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+      <line x1="22" y1="46" x2="36" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="44" y1="46" x2="58" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+      <ellipse cx="34" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <ellipse cx="46" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+    </svg>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="solution-section" id="solution">
+  <div>
+    <div class="section-label">🌿 Soluția noastră</div>
+    <h2 class="section-title">Noi aducem natura <em>în siguranță</em></h2>
+    <p style="color:#666; font-size:1rem; line-height:1.8; margin-bottom:20px;">Construim spații exterioare complet personalizate — adaptate fiecărui client, fiecărei pisici și fiecărui spațiu disponibil. Fiecare proiect este unic, gândit cu dragoste.</p>
+    <ul class="benefits-list">
+      <li><span class="icon">🔒</span><div><strong>Siguranță totală</strong> — fără risc de fugă, cădere sau accidente</div></li>
+      <li><span class="icon">🎨</span><div><strong>Design personalizat</strong> — proiectat exact pentru spațiul tău</div></li>
+      <li><span class="icon">🪵</span><div><strong>Materiale premium</strong> — rezistente la intemperii, estetice și durabile</div></li>
+      <li><span class="icon">🧗</span><div><strong>Zone de cățărat și joacă</strong> — platforme, trasee, structuri verticale</div></li>
+      <li><span class="icon">🌱</span><div><strong>Integrare cu natura</strong> — plante, piatră, lemn natural</div></li>
+    </ul>
+  </div>
+  <div class="sol-images">
+    <div class="sol-img-wrap big">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7612']}" alt="Catio mare modern" style="height:280px; width:100%; object-fit:cover;"/>
+      <svg class="sol-img-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="sol-img-wrap">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7607']}" alt="Balcon catio noapte" style="height:220px; width:100%; object-fit:cover;"/>
+      <svg class="sol-img-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="sol-img-wrap">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7610']}" alt="Balcon simplu catio" style="height:220px; width:100%; object-fit:cover;"/>
+      <svg class="sol-img-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- CAT BENEFITS -->
+<section class="cat-benefits">
+  <div class="section-label">❤️ Beneficii reale</div>
+  <h2 class="section-title">O viață mai fericită pentru <em>pisica ta</em></h2>
+  <div class="benefits-grid">
+    <div class="benefit-card">
+      <span class="benefit-emoji">🧠</span>
+      <div class="benefit-title">Stimulare mentală</div>
+      <div class="benefit-desc">Mirosuri, sunete și mișcare din natură îi antrenează mintea zilnic</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-emoji">💪</span>
+      <div class="benefit-title">Mișcare naturală</div>
+      <div class="benefit-desc">Cățărat, alergat și explorat — exact cum au nevoie</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-emoji">😺</span>
+      <div class="benefit-title">Stres redus</div>
+      <div class="benefit-desc">Spațiu propriu înseamnă pisică echilibrată și comportament armonios</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-emoji">🌬️</span>
+      <div class="benefit-title">Aer curat</div>
+      <div class="benefit-desc">Lumina naturală și aerul proaspăt îmbunătățesc sănătatea</div>
+    </div>
+    <div class="benefit-card">
+      <span class="benefit-emoji">🐾</span>
+      <div class="benefit-title">Libertate autentică</div>
+      <div class="benefit-desc">Pisica ta poate fi… pisică, în siguranță deplină</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects-section" id="projects">
+  <div class="section-label">🏗️ Ce construim</div>
+  <h2 class="section-title">Adaptat pentru <em>orice spațiu</em></h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7606']}" alt="Balcon mic"/>
+      <svg class="project-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+      <div class="project-info">
+        <div class="project-tag">🏢 Apartament</div>
+        <div class="project-name">Balcon transformat</div>
+        <div class="project-desc">Un balcon mic devine zonă de relaxare completă, cu plase de siguranță, platforme și spații de cățărat</div>
+      </div>
+    </div>
+    <div class="project-card">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7613']}" alt="Terasă modernă"/>
+      <svg class="project-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+      <div class="project-info">
+        <div class="project-tag">🌿 Terasă</div>
+        <div class="project-name">Terasă cu natură</div>
+        <div class="project-desc">Design modern cu plante, gazon artificial și structuri premium din lemn</div>
+      </div>
+    </div>
+    <div class="project-card">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7609']}" alt="Volieră mare curte"/>
+      <svg class="project-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.92"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+      <div class="project-info">
+        <div class="project-tag">🏡 Curte</div>
+        <div class="project-name">Volieră mare – Catio Deluxe</div>
+        <div class="project-desc">Spații generoase cu gazon, plante reale și multiple zone de joacă și odihnă</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="section-label">📸 Inspirație</div>
+  <h2 class="section-title">Galerie de <em>proiecte</em></h2>
+  <div class="gallery-grid">
+    <div class="gallery-item tall">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7612']}" alt="Catio metal mare"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="gallery-item">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7606']}" alt="Balcon catio"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="gallery-item">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7607']}" alt="Balcon noapte"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="gallery-item">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7614']}" alt="Cat play house"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 30,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="gallery-item">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7608']}" alt="Catio dark modern"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+    <div class="gallery-item">
+      <img src="data:image/jpeg;base64,{imgs['IMG_7609']}" alt="Voliera grădină"/>
+      <div class="gallery-overlay"></div>
+      <svg class="gallery-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="40" cy="40" r="38" fill="#2d5a27" opacity="0.88"/>
+        <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+        <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+        <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+        <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+        <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+        <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+        <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-label">⚙️ Cum lucrăm</div>
+  <h2 class="section-title">De la idee la <em>paradisul pisicii tale</em></h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">💬 Consultare</div>
+      <div class="step-desc">Discutăm despre spațiul tău, preferințele pisicii și bugetul disponibil</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">🎨 Design personalizat</div>
+      <div class="step-desc">Creăm un proiect vizual adaptat exact nevoilor tale</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">🔨 Construcție</div>
+      <div class="step-desc">Materialele sunt montate profesional, rapid și fără bătăi de cap</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">🐱 Bucuria pisicii</div>
+      <div class="step-desc">Predăm proiectul și vedem cum pisica ta descoperă noul paradis</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="section-label">⭐ Clienți fericiți</div>
+  <h2 class="section-title">Ce spun cei care au ales <em>PawParadise</em></h2>
+  <div class="testimonials-grid">
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Am transformat balconul în ceva incredibil! Pisica mea, Mochi, nu mai vrea să intre în casă. Doarme afară, urmărește păsările, se cațără — e fericită în fiecare zi. Mulțumesc, Robert!</p>
+      <div class="testimonial-author">Maria D.</div>
+      <div class="testimonial-pet">🐱 Mama lui Mochi, București</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Calitate excepțională, atenție la detalii și punctualitate. Pisicile noastre au acum un spațiu de joacă în curte care arată ca dintr-un catalog de design. Îl recomand cu toată inima!</p>
+      <div class="testimonial-author">Andrei & Ioana</div>
+      <div class="testimonial-pet">🐱🐱 Părinții lui Leo & Nala, Cluj</div>
+    </div>
+    <div class="testimonial">
+      <div class="stars">★★★★★</div>
+      <p class="testimonial-text">Nu credeam că dintr-un balcon mic se poate face atât de mult. Robert a venit, a măsurat, a propus și în câteva zile pisica mea avea un mini-univers al ei. E cea mai bună investiție!</p>
+      <div class="testimonial-author">Cristina M.</div>
+      <div class="testimonial-pet">🐱 Stăpâna lui Pufuțu, Timișoara</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="section-label">🚀 Hai să începem</div>
+  <h2 class="cta-title">Pisica ta merită mai mult<br>decât <em>un pervaz</em></h2>
+  <p class="cta-sub">Contactează-ne acum și primești o consultare gratuită. Îți arătăm ce putem construi pentru spațiul tău — fără nicio obligație.</p>
+  <a href="tel:0731931719" class="btn-primary" style="font-size:1.15rem; padding:18px 40px; margin:0 auto;">
+    📞 Sună acum — 0731 931 719
+  </a>
+  <div class="cta-contact">
+    <span>Robert • PawParadise</span>
+    <span>|</span>
+    <a href="tel:0731931719">0731 931 719</a>
+    <span>|</span>
+    <span>„Libertate fără pericole. Joacă fără limite."</span>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <svg width="44" height="44" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="40" cy="40" r="38" fill="#2d5a27"/>
+      <polygon points="22,34 15,16 30,28" fill="#b8d4aa"/>
+      <polygon points="58,34 65,16 50,28" fill="#b8d4aa"/>
+      <ellipse cx="40" cy="44" rx="18" ry="16" fill="#faf6ef"/>
+      <ellipse cx="34" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <ellipse cx="46" cy="40" rx="3.5" ry="4.5" fill="#2d5a27"/>
+      <polygon points="40,45 38,47.5 42,47.5" fill="#c9a84c"/>
+      <line x1="22" y1="46" x2="36" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="44" y1="46" x2="58" y2="46" stroke="#7a9e6e" stroke-width="1.2" stroke-linecap="round"/>
+      <ellipse cx="40" cy="62" rx="8" ry="4" fill="#b8d4aa"/>
+      <ellipse cx="34" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <ellipse cx="46" cy="60" rx="3" ry="2.5" fill="#b8d4aa"/>
+      <text x="37.5" y="63.5" font-family="serif" font-size="6" font-weight="bold" fill="#2d5a27">R</text>
+    </svg>
+    <div>
+      <div class="footer-brand-text">Paw<span>Paradise</span> by Robert</div>
+      <div style="font-size:0.78rem; margin-top:4px;">Libertate fără pericole. Joacă fără limite. 🐾</div>
+    </div>
+  </div>
+  <div class="footer-right">
+    <div>📞 <a href="tel:0731931719">0731 931 719</a></div>
+    <div style="margin-top:6px;">© 2025 PawParadise by Robert. Toate drepturile rezervate.</div>
+  </div>
+</footer>
+
+</body>
+</html>"""
+
+with open('/mnt/user-data/outputs/pawparadise_robert.html','w') as f:
+    f.write(html)
+print(f"Done! Size: {len(html)/1024:.0f} KB")
+PYEOF
